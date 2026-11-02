@@ -1,5 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css'
+import "@fortawesome/fontawesome-free/css/all.min.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,9 +22,10 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`
+    }
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col"   cz-shortcut-listen="true">{children}</body>
     </html>
   );
 }

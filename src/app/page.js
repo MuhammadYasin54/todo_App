@@ -1,69 +1,147 @@
-import Image from "next/image";
+"use client"
+import { useState } from "react";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+import {
+    MDBBtn,
+    MDBCard,
+    MDBCardBody,
+    MDBCol,
+    MDBContainer,
+    MDBInput,
+    MDBRow,
+    MDBTable,
+    MDBTableBody,
+    MDBTableHead,
+} from "mdb-react-ui-kit";
+import { MDBClientOnly, MDBModal } from 'mdb-react-ui-kit';
+
+const TodoList = () => {
+
+    const [todoInput, setTodoInput] = useState("");
+    const [todoArr, setTodoArr] = useState([]);
+    const [targetKey, setTargetKey] = useState("")
+    const [isEdit, setIsEdit] = useState(false)
+
+    const addItem = () => {
+        console.log(todoInput);
+        const cloneTodos = [...todoArr]
+        cloneTodos.push(todoInput);
+        setTodoArr(cloneTodos);
+        setTodoInput("")
+
+    }
+    const deleteItem = (key) => {
+        const cloneTodos = [...todoArr]
+        cloneTodos.splice(key, 1)
+        setTodoArr(cloneTodos);
+    }
+
+    const editItem = (key) => {
+        const targetVal = todoArr[key]
+        setTargetKey(key)
+        setTodoInput(targetVal);
+        setIsEdit(true)
+    }
+    const updateItem = () => {
+        const cloneTodos = [...todoArr]
+        // cloneTodos[isEdit]=todoInput;
+        cloneTodos.splice(targetKey, 1, todoInput);
+        setTodoArr(cloneTodos);
+        setTodoInput("")
+        setIsEdit(false);
+        setTargetKey("")
+    }
+    const undoItem = () => {
+        setTodoInput("")
+        setIsEdit(false)
+    }
+
+    return (
+        <section className="vh-100" style={{ backgroundColor: "#eee"}}>
+            <MDBContainer className="py-5 h-100">
+                <MDBRow className="d-flex justify-content-center align-items-center">
+                    <MDBCol lg="9" xl="8">
+                        <MDBCard className="rounded-3">
+                            <MDBCardBody className="p-4">
+                                 <h3 className="text-center my-3 pb-3" >Organise Your Work</h3>
+                                <h4 className="text-center my-3 pb-3">To-Do App</h4>
+                                <MDBRow className="row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
+                                    <MDBCol size="12">
+                                        <MDBInput
+                                            label="Enter a task here"
+                                            id="form1"
+                                            type="text"
+
+
+                                            value={todoInput} onChange={(e) => setTodoInput(e.target.value)}
+                                        />
+                                    </MDBCol>
+                                    <br/>
+                                    <MDBCol size="12">  
+                                        {
+                                            (isEdit)
+                                                ?
+                                                (<div>
+                                                    <MDBBtn onClick={undoItem}> Undo</MDBBtn>
+                                                    <MDBBtn onClick={updateItem}>Update</MDBBtn>
+                                                </div>)
+                                                :
+                                                (<div>
+                                                    <MDBBtn onClick={addItem}>Add Data</MDBBtn>
+
+                                                </div>)
+                                        }
+
+                                    </MDBCol>
+                                    <MDBCol size="12">
+                                        <MDBBtn type="submit" color="warning" onClick={() => setTodoArr([])}>
+                                            Delete All
+                                        </MDBBtn>
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBTable className="mb-4" >
+                                    {
+                                        todoArr.length > 0 &&
+
+                                        <MDBTableHead >
+                                            <tr style={{ textAlign: "center" }}>
+                                                <th scope="col">No.</th>
+                                                <th scope="col">Todo item</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </MDBTableHead>
+                                    }              <MDBTableBody >
+                                        {
+                                            todoArr?.map((item, index) => {
+                                                return (
+                                                    <tr key={index} style={{ textAlign: "center" }}>
+                                                        <th scope="row">{index + 1}</th>
+                                                        <td>{item}</td>
+                                                        <td>{new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()}</td>
+                                                        <td>
+                                                            <MDBBtn color="danger"
+                                                                onClick={() => deleteItem(index)} disabled={isEdit}>
+                                                                Delete
+                                                            </MDBBtn>
+
+                                                            <MDBBtn color="success" className="ms-1"
+                                                                onClick={() => editItem(index)}>
+                                                                Edit
+                                                            </MDBBtn>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </MDBTableBody>
+                                </MDBTable>
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
+        </section>
+    );
 }
+export default TodoList;
